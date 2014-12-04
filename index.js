@@ -214,7 +214,20 @@ function set(query, assembly, key, defaultValue) {
   if (typeof val !== 'undefined') assembly[key] = val;
   else if (defaultValue !== null) assembly[key] = defaultValue;
 
-  if (assembly[key] !== null) assembly[key] = parse(assembly[key]);
+  if (assembly[key] !== null) assembly[key] = deepParse(assembly[key]);
+}
+
+/**
+ * Deep parse an object
+ */
+
+function deepParse(val) {
+  if (typeof val !== 'object') return parse(val);
+  if (Array.isArray(val)) return val.map(deepParse);
+  return Object.keys(val).reduce(function(acc, key) {
+    acc[key] = deepParse(val[key])
+    return acc;
+  }, {});
 }
 
 /**
