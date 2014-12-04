@@ -1,0 +1,27 @@
+{
+  "name": "imago",
+  "version": "0.1.0",
+  "description": "on-the-fly image manipulation service",
+  "main": "index.js",
+  "scripts": {
+    "test": "NODE_ENV=test ./node_modules/.bin/mocha"
+  },
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/camshaft/imago.git"
+  },
+  "author": "Cameron Bytheway <bytheway.cameron@gmail.com>",
+  "license": "MIT",
+  "bugs": {
+    "url": "https://github.com/camshaft/imago/issues"
+  },
+  "homepage": "https://github.com/camshaft/imago",
+  "dependencies": {
+    "envs": "^0.1.6",
+    "simple-http-proxy": "^0.5.11",
+    "transloadit": "^1.2.1"
+  },
+  "devDependencies": {
+    "simple-stack-common": "^0.2.3"
+  }
+}
