@@ -65,6 +65,7 @@ module.exports = function(opts) {
   var bucket = opts.s3Bucket || envs('S3_BUCKET');
   var key = opts.s3Key || envs('AWS_ACCESS_KEY_ID');
   var secret = opts.s3Secret || envs('AWS_SECRET_ACCESS_KEY');
+  var transformAssembly = opts.onassembly || noop;
 
   return function processImage(req, res, next) {
     if (req.url === '/') return api(req, res, next);
@@ -86,8 +87,10 @@ module.exports = function(opts) {
 
     set(req.query, assembly.params, 'template_id');
 
+    var transformed = (transformAssembly || noop)(assembly, req);
+
     var end = profile(req, 'transloadit.resize');
-    client(assembly, function(err, result) {
+    client(transformed || assembly, function(err, result) {
       end({
         error: err && err.message,
         assembly: result && result.assembly_url
