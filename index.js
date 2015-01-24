@@ -196,6 +196,8 @@ function formatOut(use, query) {
     s.apply(null, args);
   });
 
+  if (assembly.text) deepParse(assembly.text);
+
   return assembly;
 }
 
@@ -211,6 +213,11 @@ function formatOut(use, query) {
 
 function set(query, assembly, key, defaultValue) {
   var val = query[key];
+  if (key.indexOf('crop_') === 0 && typeof val !== 'undefined') {
+    var crop = assembly.crop = assembly.crop || {};
+    crop[key.replace('crop_', '')] = parse(val);
+    return;
+  }
   if (typeof val !== 'undefined') assembly[key] = val;
   else if (defaultValue !== null) assembly[key] = defaultValue;
 
@@ -229,6 +236,7 @@ function deepParse(val) {
     return acc;
   }, {});
 }
+
 
 /**
  * Parse a query value
