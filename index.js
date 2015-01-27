@@ -236,6 +236,7 @@ function steps(key, secret, bucket, req) {
       robot: '/image/resize',
       use: 'import',
       crop: req.query.crop,
+      resize_strategy: "crop"
     };
 
     outPrevStep = 'crop';
