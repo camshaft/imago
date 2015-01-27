@@ -72,16 +72,7 @@ module.exports = function(opts) {
 
     var assembly = {
       params: {
-        steps: {
-          import: {
-            robot: '/s3/import',
-            key: key,
-            secret: secret,
-            bucket: bucket,
-            path: req.url.split('?')[0].substr(1)
-          },
-          out: formatOut('import', req.query)
-        }
+        steps: steps(key, secret, bucket, req)
       }
     };
 
@@ -213,15 +204,45 @@ function formatOut(use, query) {
 
 function set(query, assembly, key, defaultValue) {
   var val = query[key];
-  if (key.indexOf('crop_') === 0 && typeof val !== 'undefined') {
-    var crop = assembly.crop = assembly.crop || {};
-    crop[key.replace('crop_', '')] = parse(val);
-    return;
-  }
+
   if (typeof val !== 'undefined') assembly[key] = val;
   else if (defaultValue !== null) assembly[key] = defaultValue;
 
   if (assembly[key] !== null) assembly[key] = deepParse(assembly[key]);
+}
+
+/**
+ * Calculate assembly steps
+ *
+ * @param {String} key
+ * @param {String} secret
+ * @param {String} bucket
+ * @param {Object} req
+ */
+function steps(key, secret, bucket, req) {
+  var outPrevStep = 'import';
+  var steps = {
+    import: {
+      robot: '/s3/import',
+      key: key,
+      secret: secret,
+      bucket: bucket,
+      path: req.url.split('?')[0].substr(1)
+    }
+  }
+  //cropping passed
+  if (req.query.crop) {
+    steps['crop'] = {
+      robot: '/image/resize',
+      use: 'import',
+      crop: req.query.crop,
+    };
+
+    outPrevStep = 'crop';
+  }
+
+  steps['out'] = formatOut(outPrevStep, req.query);
+  return steps;
 }
 
 /**
