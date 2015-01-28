@@ -1,4 +1,4 @@
-var imago = require('./');
+var imago = require('../');
 var stack = require('simple-stack-common');
 
 var app = module.exports = stack();

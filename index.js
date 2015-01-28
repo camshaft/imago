@@ -78,10 +78,10 @@ module.exports = function(opts) {
 
     set(req.query, assembly.params, 'template_id');
 
-    var transformed = (transformAssembly || noop)(assembly, req);
+    var transformed = (transformAssembly || noop)(assembly, req) || assembly;
 
     var end = profile(req, 'transloadit.resize');
-    client(transformed || assembly, function(err, result) {
+    client(transformed, function(err, result) {
       end({
         error: err && err.message,
         assembly: result && result.assembly_url
@@ -235,7 +235,7 @@ function steps(key, secret, bucket, req) {
     steps['crop'] = {
       robot: '/image/resize',
       use: 'import',
-      crop: req.query.crop,
+      crop: deepParse(req.query.crop),
       resize_strategy: "crop"
     };
 
