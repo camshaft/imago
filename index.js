@@ -141,10 +141,11 @@ function createClient(opts) {
   }
 
   function handle(cb, err, result) {
+    if (err && (err.code === 'ETIMEDOUT' || err.code === 'ESOCKETTIMEDOUT')) return poll(result.assembly_url, cb);
     if (err) return cb(err);
     if (result.error) return cb(new Error(result.message));
     if (result.ok !== 'ASSEMBLY_COMPLETED') return poll(result.assembly_url, cb);
-    cb(err, result);
+    return cb(err, result);
   }
 
   return create;
