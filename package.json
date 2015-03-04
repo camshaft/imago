@@ -1,6 +1,6 @@
 {
   "name": "imago",
-  "version": "0.1.6",
+  "version": "0.1.7",
   "description": "on-the-fly image manipulation service",
   "main": "index.js",
   "scripts": {
