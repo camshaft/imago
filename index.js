@@ -136,6 +136,7 @@ function createClient(opts) {
   }
 
   function poll(url, cb) {
+    if (!url) return cb(new Error('missing assembly url'));
     setTimeout(function() {
       client._remoteJson({
         url: url
@@ -147,7 +148,7 @@ function createClient(opts) {
     if (err && (err.code === 'ETIMEDOUT' || err.code === 'ESOCKETTIMEDOUT') && url) return poll(url, cb);
     if (err) return cb(err);
     if (result.error) return cb(new Error(result.message));
-    if (result.ok !== 'ASSEMBLY_COMPLETED') return poll(result.assembly_url, cb);
+    if (result.ok !== 'ASSEMBLY_COMPLETED') return poll(result.assembly_url || url, cb);
     return cb(err, result);
   }
 
