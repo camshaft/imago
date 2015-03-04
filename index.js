@@ -129,7 +129,7 @@ function createClient(opts) {
   });
 
   function create(assembly, cb) {
-    client.createAssembly(assembly, handle.bind(null, cb));
+    client.createAssembly(assembly, handle.bind(null, cb, null));
   }
 
   function poll(url, cb) {
@@ -141,10 +141,10 @@ function createClient(opts) {
   }
 
   function handle(cb, url, err, result) {
-    if (err && (err.code === 'ETIMEDOUT' || err.code === 'ESOCKETTIMEDOUT')) return poll(url, cb);
+    if (err && (err.code === 'ETIMEDOUT' || err.code === 'ESOCKETTIMEDOUT') && url) return poll(url, cb);
     if (err) return cb(err);
     if (result.error) return cb(new Error(result.message));
-    if (result.ok !== 'ASSEMBLY_COMPLETED') return poll(url, cb);
+    if (result.ok !== 'ASSEMBLY_COMPLETED') return poll(result.assembly_url, cb);
     return cb(err, result);
   }
 
