@@ -136,15 +136,15 @@ function createClient(opts) {
     setTimeout(function() {
       client._remoteJson({
         url: url
-      }, handle.bind(null, cb));
+      }, handle.bind(null, cb, url));
     }, 500);
   }
 
-  function handle(cb, err, result) {
-    if (err && (err.code === 'ETIMEDOUT' || err.code === 'ESOCKETTIMEDOUT')) return poll(result.assembly_url, cb);
+  function handle(cb, url, err, result) {
+    if (err && (err.code === 'ETIMEDOUT' || err.code === 'ESOCKETTIMEDOUT')) return poll(url, cb);
     if (err) return cb(err);
     if (result.error) return cb(new Error(result.message));
-    if (result.ok !== 'ASSEMBLY_COMPLETED') return poll(result.assembly_url, cb);
+    if (result.ok !== 'ASSEMBLY_COMPLETED') return poll(url, cb);
     return cb(err, result);
   }
 
